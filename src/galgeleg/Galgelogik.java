@@ -9,8 +9,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-public class Galgelogik {
+import java.rmi.server.UnicastRemoteObject;
+
+public class Galgelogik extends UnicastRemoteObject implements GalgeInterface{
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
+  ArrayList<String> outputTilKlientArray = new ArrayList<String>();
   ArrayList<String> muligeOrd = new ArrayList<String>();
   private String ordet;
   private ArrayList<String> brugteBogstaver = new ArrayList<String>();
@@ -54,7 +57,9 @@ public class Galgelogik {
   }
 
 
-  public Galgelogik() {
+  // Påkrævet constructor
+  public Galgelogik() throws java.rmi.RemoteException
+  {
     muligeOrd.add("bil");
     muligeOrd.add("computer");
     muligeOrd.add("programmering");
@@ -93,8 +98,11 @@ public class Galgelogik {
   }
 
   public void gætBogstav(String bogstav) {
+    outputTilKlientArray.clear();
+    
     if (bogstav.length() != 1) return;
-    System.out.println("Der gættes på bogstavet: " + bogstav);
+    System.out.println("Der gættes på bogstavet: " + bogstav); 
+    outputTilKlientArray.add("Der gættes på bogstavet: " + bogstav + "\n"); // klient output
     if (brugteBogstaver.contains(bogstav)) return;
     if (spilletErVundet || spilletErTabt) return;
 
@@ -102,11 +110,13 @@ public class Galgelogik {
 
     if (ordet.contains(bogstav)) {
       sidsteBogstavVarKorrekt = true;
-      System.out.println("Bogstavet var korrekt: " + bogstav);
+      System.out.println("Bogstavet var korrekt: " + bogstav); 
+      outputTilKlientArray.add("Bogstavet var korrekt\n"); // klient output
     } else {
       // Vi gættede på et bogstav der ikke var i ordet.
       sidsteBogstavVarKorrekt = false;
       System.out.println("Bogstavet var IKKE korrekt: " + bogstav);
+      outputTilKlientArray.add("Bogstavet var IKKE korrekt\n"); // klient output
       antalForkerteBogstaver = antalForkerteBogstaver + 1;
       if (antalForkerteBogstaver > 6) {
         spilletErTabt = true;
@@ -116,14 +126,27 @@ public class Galgelogik {
   }
 
   public void logStatus() {
+    outputTilKlientArray.clear();
+    
     System.out.println("---------- ");
-    System.out.println("- ordet (skult) = " + ordet);
+    if (erSpilletSlut()) System.out.println("- ordet (skult) = " + ordet);
     System.out.println("- synligtOrd = " + synligtOrd);
     System.out.println("- forkerteBogstaver = " + antalForkerteBogstaver);
     System.out.println("- brugeBogstaver = " + brugteBogstaver);
     if (spilletErTabt) System.out.println("- SPILLET ER TABT");
     if (spilletErVundet) System.out.println("- SPILLET ER VUNDET");
     System.out.println("---------- ");
+    
+    
+    // Klient output
+    outputTilKlientArray.add("---------- \n"); // klient output
+    outputTilKlientArray.add("- ordet (skult) = " + ordet + "\n"); // klient output
+    outputTilKlientArray.add("- synligtOrd = " + synligtOrd + "\n"); // klient output
+    outputTilKlientArray.add("- forkerteBogstaver = " + antalForkerteBogstaver + "\n"); // klient output
+    outputTilKlientArray.add("- brugteBogstaver = " + brugteBogstaver + "\n"); // klient output
+    if (spilletErTabt) outputTilKlientArray.add("- SPILLET ER TABT\n"); // klient output
+    if (spilletErVundet) outputTilKlientArray.add("- SPILLET ER VUDNET\n"); // klient output
+    outputTilKlientArray.add("--------------- \n");
   }
 
 
@@ -163,5 +186,10 @@ public class Galgelogik {
 
     System.out.println("muligeOrd = " + muligeOrd);
     nulstil();
+  }
+  
+  public String outputTilKlient()
+  {
+      return outputTilKlientArray.toString();
   }
 }
