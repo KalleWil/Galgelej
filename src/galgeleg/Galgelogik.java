@@ -10,8 +10,13 @@ import java.util.HashSet;
 import java.util.Random;
 
 import java.rmi.server.UnicastRemoteObject;
+import javax.jws.WebService;
 
+
+    @WebService(endpointInterface = "galgeleg.GalgeInterface") // til soap
+    
 public class Galgelogik extends UnicastRemoteObject implements GalgeInterface{
+
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
   ArrayList<String> outputTilKlientArray = new ArrayList<String>();
   ArrayList<String> muligeOrd = new ArrayList<String>();
