@@ -5,17 +5,22 @@
  */
 package galgeleg;
 
+import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.Scanner;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 
 /**
  *
  * @author Julian
+ * FEJL:
+ * Tror umiddelbart ikke, at der oprettes et wsdl dokument når serveren oprettes.
  */
 public class GalgeKlient 
 {
-    public static void main(String[] args) throws Exception 
+      public static void main(String[] args) throws Exception 
     {
         
         GalgeInterface spil = (GalgeInterface) Naming.lookup("rmi://localhost:1099/GalgeServer");
