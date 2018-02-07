@@ -63,8 +63,9 @@ public class Galgelogik extends UnicastRemoteObject implements GalgeInterface{
 
 
   // Påkrævet constructor
-  public Galgelogik() throws java.rmi.RemoteException
+  public Galgelogik() throws java.rmi.RemoteException, Exception
   {
+    hentOrdFraDr();
     muligeOrd.add("bil");
     muligeOrd.add("computer");
     muligeOrd.add("programmering");
@@ -145,7 +146,7 @@ public class Galgelogik extends UnicastRemoteObject implements GalgeInterface{
     
     // Klient output
     outputTilKlientArray.add("---------- \n"); // klient output
-    outputTilKlientArray.add("- ordet (skult) = " + ordet + "\n"); // klient output
+    if (erSpilletSlut()) {  outputTilKlientArray.add("- ordet (skult) = " + ordet + "\n"); nulstil();}// klient output 
     outputTilKlientArray.add("- synligtOrd = " + synligtOrd + "\n"); // klient output
     outputTilKlientArray.add("- forkerteBogstaver = " + antalForkerteBogstaver + "\n"); // klient output
     outputTilKlientArray.add("- brugteBogstaver = " + brugteBogstaver + "\n"); // klient output
@@ -171,18 +172,17 @@ public class Galgelogik extends UnicastRemoteObject implements GalgeInterface{
   public void hentOrdFraDr() throws Exception {
     String data = hentUrl("https://dr.dk");
     //System.out.println("data = " + data);
-
     data = data.substring(data.indexOf("<body")). // fjern headere
-            replaceAll("<.+?>", " ").toLowerCase(). // fjern tags
-            replaceAll("&#198;", "æ"). // erstat HTML-tegn
-            replaceAll("&#230;", "æ"). // erstat HTML-tegn
-            replaceAll("&#216;", "ø"). // erstat HTML-tegn
-            replaceAll("&#248;", "ø"). // erstat HTML-tegn
-            replaceAll("&oslash;", "ø"). // erstat HTML-tegn
-            replaceAll("&#229;", "å"). // erstat HTML-tegn
-            replaceAll("[^a-zæøå]", " "). // fjern tegn der ikke er bogstaver
-            replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
-            replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
+    replaceAll("<.+?>", " ").toLowerCase(). // fjern tags
+    replaceAll("&#198;", "æ"). // erstat HTML-tegn
+    replaceAll("&#230;", "æ"). // erstat HTML-tegn
+    replaceAll("&#216;", "ø"). // erstat HTML-tegn
+    replaceAll("&#248;", "ø"). // erstat HTML-tegn
+    replaceAll("&oslash;", "ø"). // erstat HTML-tegn
+    replaceAll("&#229;", "å"). // erstat HTML-tegn
+    replaceAll("[^a-zæøå]", " "). // fjern tegn der ikke er bogstaver
+    replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
+    replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
 
     System.out.println("data = " + data);
     System.out.println("data = " + Arrays.asList(data.split("\\s+")));
