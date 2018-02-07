@@ -23,14 +23,22 @@ public class GalgeKlient
       public static void main(String[] args) throws Exception 
     {
         
-        GalgeInterface spil = (GalgeInterface) Naming.lookup("rmi://localhost:1099/GalgeServer");
+        //GalgeInterface spil = (GalgeInterface) Naming.lookup("rmi://localhost:1099/GalgeServer");
         //Galgelogik spil = new Galgelogik(); // ændr således at logik udføres fra server
+        
+        
+        URL url = new URL("http://localhost:9919/GalgeServer?wsdl"); // soap - Forbinder til det navn serveren udgiver sig på "GalgeServer"
+        QName qname = new QName("http://galgeleg/", "GalgelogikService");
+        
+        Service service = Service.create(url, qname);
+        GalgeInterface spil = service.getPort(GalgeInterface.class);
+        
         
         boolean aktiv = true;
         String gæt;
         Scanner tastatur = new Scanner(System.in);
         
-        
+       
         
         while (aktiv)
         {
@@ -38,10 +46,10 @@ public class GalgeKlient
             gæt = tastatur.next();
             spil.gætBogstav(gæt);   
             System.out.println(spil.outputTilKlient());
+            if (spil.erSpilletSlut()) aktiv = false; // forbereder næste trin i spillet
             spil.logStatus();       
             System.out.println(spil.outputTilKlient());    
-            if (spil.erSpilletSlut()) aktiv = false;
-        }
+           }
       
         System.out.println("Spillet afsluttes/Forbindelse til server lukkes");
        
